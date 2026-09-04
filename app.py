@@ -30,21 +30,17 @@ def parse_guess(raw: str):
 
 
 def check_guess(guess, secret):
+    # FIX: guess and secret are always compared as ints now (no more
+    # str(secret) conversion upstream), so the TypeError fallback that
+    # used to paper over a self-inflicted type mismatch is gone. That
+    # fallback was doing lexicographic string comparisons under the hood
+    # (e.g. "99" > "100" is True), which flipped Too High/Too Low on
+    # roughly half of all attempts.
     if guess == secret:
         return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+    if guess > secret:
+        return "Too High", "📈 Go LOWER!"
+    return "Too Low", "📉 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -92,8 +88,27 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
+# FIX: track which difficulty the current secret was generated for, so
+# switching difficulty mid-session regenerates a secret that actually
+# fits the new range, instead of silently keeping a stale one (e.g. a
+# secret of 73 surviving a switch to Easy's 1-20 range, making the
+# game unwinnable).
+if "secret_difficulty" not in st.session_state:
+    st.session_state.secret_difficulty = difficulty
+
+if st.session_state.secret_difficulty != difficulty:
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.secret_difficulty = difficulty
+    st.session_state.attempts = 0
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+
+# FIX: attempts now starts at 0, matching the "New Game" reset below,
+# so "Attempts left" math is consistent from the very first render
+# instead of being off by one on a fresh session.
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -106,8 +121,10 @@ if "history" not in st.session_state:
 
 st.subheader("Make a guess")
 
+# FIX: hint text now reflects the actual range for the selected
+# difficulty instead of hardcoding "1 and 100".
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -133,7 +150,12 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)  # FIX: use the
+    # selected difficulty's range instead of hardcoded 1-100.
+    st.session_state.secret_difficulty = difficulty
+    st.session_state.score = 0        # FIX: reset score on a new game
+    st.session_state.status = "playing"  # FIX: reset status on a new game
+    st.session_state.history = []        # FIX: reset history on a new game
     st.success("New game started.")
     st.rerun()
 
@@ -155,12 +177,12 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
-
-        outcome, message = check_guess(guess_int, secret)
+        # FIX: always compare as ints. The old code alternated the
+        # secret between int and str every other attempt, which forced
+        # check_guess() into a TypeError fallback that compared numbers
+        # as strings (lexicographic order), silently reversing
+        # Too High/Too Low hints on roughly half of all guesses.
+        outcome, message = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
             st.warning(message)
