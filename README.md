@@ -26,7 +26,9 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
+      The game is is a simple program where a random number is chosen and the player guesses the number with the program hinting higher or lower based on the guess.
 - [ ] Detail which bugs you found.
+      An occasionally changing secret number and inaccurate.
 - [ ] Explain what fixes you applied.
 
 ## 📸 Demo Walkthrough
