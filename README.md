@@ -26,10 +26,24 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
-      The game is is a simple program where a random number is chosen and the player guesses the number with the program hinting higher or lower based on the guess.
+- The game is is a simple program where a random number is chosen and the player guesses the number with the program hinting higher or lower based on the guess.
 - [ ] Detail which bugs you found.
-      An occasionally changing secret number and inaccurate.
+- Type-mismatch hint bug — On even attempts the secret was silently converted to a string while the guess stayed an int, forcing a TypeError fallback that compared them lexicographically and gave backwards "Too High"/"Too   Low" hints.
+- Off-by-one attempt counter — The initial attempts value (1) didn't match the "New Game" reset value (0), making the "Attempts left" count inconsistent depending on how the session started.
+- Hardcoded range text — The main instruction banner always said "between 1 and 100" regardless of difficulty, even though Easy and Hard use different ranges.
+- "New Game" ignored difficulty — The New Game button regenerated the secret with a hardcoded 1–100 range instead of the selected difficulty's actual range.
+- "New Game" didn't reset score/status/history — Clicking New Game reset the secret and attempts but left the previous game's score, win/loss status, and guess history in place.
+- Difficulty switch didn't regenerate the secret — Changing the difficulty dropdown mid-session didn't reroll the secret, so it could remain outside the newly selected range and make the game unwinnable.
+- A mismatch between the guess counter's logic and what was being displayed due to uncoordinated indexing.
+- Numerous issues with starting a new game.
+- Hardcoded difficulty that made the setting moot.
 - [ ] Explain what fixes you applied.
+- Type-mismatch hint bug — Removed the parity-based str(secret) conversion so check_guess always compares two ints, eliminating the string-comparison fallback that flipped hint directions.
+- Off-by-one attempt counter — Changed the initial attempts value from 1 to 0 so it matches the "New Game" reset and the attempts-left math is consistent from the start.
+- Hardcoded range text — Replaced the literal "1 and 100" in the instruction banner with the actual low/high variables for the selected difficulty.
+- "New Game" ignored difficulty — Replaced the hardcoded random.randint(1, 100) in the New Game button with random.randint(low, high) so the new secret respects the current difficulty.
+- "New Game" didn't reset score/status/history — Added resets for score, status, and history to the New Game button so no leftover state carries into the next round.
+Difficulty switch didn't regenerate the secret — Added a secret_difficulty tracker that detects a difficulty change and rerolls the secret (plus resets attempts/score/status/history) to match the new range.
 
 ## 📸 Demo Walkthrough
 
