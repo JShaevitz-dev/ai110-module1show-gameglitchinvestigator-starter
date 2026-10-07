@@ -60,9 +60,56 @@ Describe your fixed game in numbered steps so a reader can follow along without 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+============================================= test session starts ==============================================
+platform win32 -- Python 3.10.11, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Coldfur\AppData\Local\Programs\Python\Python310\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Coldfur\Documents\Code\ai110-module1show-gameglitchinvestigator-starter-main
+plugins: anyio-4.13.0, hydra-core-1.3.2
+collected 41 items                                                                                              
+
+test_app_behavior.py::TestAttemptCounter::test_fresh_session_starts_at_zero_attempts PASSED               [  2%]
+test_app_behavior.py::TestAttemptCounter::test_attempts_increments_by_one_per_submit PASSED               [  4%]
+test_app_behavior.py::TestAttemptCounter::test_fresh_session_and_new_game_agree_on_starting_attempts PASSED [  7%]
+test_app_behavior.py::TestNewGameDifficultyRange::test_new_game_secret_respects_easy_range PASSED         [  9%]
+test_app_behavior.py::TestNewGameDifficultyRange::test_new_game_secret_respects_hard_range PASSED         [ 12%]
+test_app_behavior.py::TestNewGameResetsState::test_new_game_resets_score PASSED                           [ 14%]
+test_app_behavior.py::TestNewGameResetsState::test_new_game_resets_history PASSED                         [ 17%]
+test_app_behavior.py::TestNewGameResetsState::test_new_game_resets_status_after_a_win PASSED              [ 19%]
+test_app_behavior.py::TestDifficultySwitchRegeneratesSecret::test_switching_to_easy_puts_secret_in_range PASSED [ 21%]
+test_app_behavior.py::TestDifficultySwitchRegeneratesSecret::test_switching_difficulty_resets_progress PASSED [ 24%]
+test_app_behavior.py::TestDifficultySwitchRegeneratesSecret::test_switching_back_and_forth_keeps_secret_in_current_range PASSED [ 26%]
+test_app_behavior.py::TestGameLockAfterWin::test_submitting_after_a_win_does_not_increment_attempts_further PASSED [ 29%]
+test_game_logic.py::TestGetRangeForDifficulty::test_returns_expected_range[Easy-expected0] PASSED         [ 31%]
+test_game_logic.py::TestGetRangeForDifficulty::test_returns_expected_range[Normal-expected1] PASSED       [ 34%]
+test_game_logic.py::TestGetRangeForDifficulty::test_returns_expected_range[Hard-expected2] PASSED         [ 36%]
+test_game_logic.py::TestGetRangeForDifficulty::test_returns_expected_range[Nonsense-expected3] PASSED     [ 39%]
+test_game_logic.py::TestGetRangeForDifficulty::test_returns_expected_range[-expected4] PASSED             [ 41%]
+test_game_logic.py::TestParseGuess::test_valid_integer_string PASSED                                      [ 43%]
+test_game_logic.py::TestParseGuess::test_valid_float_string_truncates PASSED                              [ 46%]
+test_game_logic.py::TestParseGuess::test_negative_number PASSED                                           [ 48%]
+test_game_logic.py::TestParseGuess::test_empty_string_is_rejected PASSED                                  [ 51%]
+test_game_logic.py::TestParseGuess::test_none_is_rejected PASSED                                          [ 53%]
+test_game_logic.py::TestParseGuess::test_non_numeric_string_is_rejected PASSED                            [ 56%]
+test_game_logic.py::TestParseGuess::test_whitespace_only_is_rejected PASSED                               [ 58%]
+test_game_logic.py::TestCheckGuess::test_exact_match_is_a_win PASSED                                      [ 60%]
+test_game_logic.py::TestCheckGuess::test_guess_above_secret_says_go_lower PASSED                          [ 63%]
+test_game_logic.py::TestCheckGuess::test_guess_below_secret_says_go_higher PASSED                         [ 65%]
+test_game_logic.py::TestCheckGuess::test_direction_is_numeric_not_lexicographic[99-100-Too Low] PASSED    [ 68%]
+test_game_logic.py::TestCheckGuess::test_direction_is_numeric_not_lexicographic[9-10-Too Low] PASSED      [ 70%]
+test_game_logic.py::TestCheckGuess::test_direction_is_numeric_not_lexicographic[100-99-Too High] PASSED   [ 73%]
+test_game_logic.py::TestCheckGuess::test_direction_is_numeric_not_lexicographic[10-9-Too High] PASSED     [ 75%]
+test_game_logic.py::TestCheckGuess::test_direction_is_numeric_not_lexicographic[2-100-Too Low] PASSED     [ 78%]
+test_game_logic.py::TestCheckGuess::test_result_is_independent_of_attempt_parity PASSED                   [ 80%]
+test_game_logic.py::TestUpdateScore::test_win_awards_decreasing_points_for_later_attempts PASSED          [ 82%]
+test_game_logic.py::TestUpdateScore::test_win_score_never_drops_below_floor_of_ten PASSED                 [ 85%]
+test_game_logic.py::TestUpdateScore::test_too_high_on_even_attempt_awards_points PASSED                   [ 87%]
+test_game_logic.py::TestUpdateScore::test_too_high_on_odd_attempt_deducts_points PASSED                   [ 90%]
+test_game_logic.py::TestUpdateScore::test_too_low_always_deducts_points PASSED                            [ 92%]
+test_game_logic.py::TestUpdateScore::test_unknown_outcome_leaves_score_unchanged PASSED                   [ 95%]
+test_game_logic.py::TestFullRoundIntegration::test_correct_guess_end_to_end PASSED                        [ 97%]
+test_game_logic.py::TestFullRoundIntegration::test_wrong_guess_end_to_end_gives_correct_direction PASSED  [100%]
+
+============================================== 41 passed in 4.38s ==============================================
 ```
 
 ## 🚀 Stretch Features
