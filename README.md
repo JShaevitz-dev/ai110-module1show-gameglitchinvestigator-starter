@@ -49,11 +49,9 @@ Difficulty switch didn't regenerate the secret — Added a secret_difficulty tra
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Run program with streamlight
+2. Choose difficulty
+3. Enter guesses until win or lose condition
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
